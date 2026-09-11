@@ -1,19 +1,19 @@
 # Android-FuckDrmID
 
 本项目基于 **zygisk-module** 开发
-使用前必须在 Root 管理器中安装 **Zygisk-Next 1.3.4**
+使用前必须在 Root 管理器中安装 **Zygisk-Next**
 
 ## 项目介绍
 本项目专为解决安卓**设备标记**、**设备黑名单**问题开发。
 
 通过注入 
 **`android.hardware.drm-service.widevine`**
-篡改 **Widevine ID** 硬件标识，可有效解除**某粥行动**设备封禁、设备黑名单限制。
+篡改 **Widevine ID** 硬件标识，针对设备封禁、设备黑名单限制做优化。
 已在 **联想 Y700 四代** 设备实测稳定可用。
 
 ## 使用教程
 1. 设备已解锁 Bootloader、拥有完整 Root 环境
-2. 安装并激活 **Zygisk-Next 1.3.4**
+2. 安装并激活 **Zygisk-Next**
 3. 打开 Zygisk Next 的webview并打开Zygisk Next连接器
 4. 模块压缩包导入 Magisk 管理器
 5. 勾选启用本模块，重启设备
