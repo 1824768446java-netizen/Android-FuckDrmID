@@ -1,0 +1,4 @@
+name=android.hardware.drm-service.widevine libdrmid.so
+name=android.hardware.drm@1.4-service.widevine libdrmid.so
+name=android.hardware.drm@1.3-service.widevine libdrmid.so
+name=android.hardware.drm@1.2-service.widevine libdrmid.so

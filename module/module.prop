@@ -1,0 +1,6 @@
+id=Android-FuckDrmID
+name=Android-FuckDrmID
+version=v1.0.0
+versionCode=1
+author=jamlops
+description=Inject android.hardware.drm-service.widevine and spoof Widevine ID

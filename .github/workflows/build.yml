@@ -1,0 +1,61 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r27c
+          add-to-path: false
+
+      - name: ndk-build
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+        run: |
+          set -euo pipefail
+          "${ANDROID_NDK_HOME}/ndk-build" \
+            NDK_PROJECT_PATH="$PWD" \
+            APP_BUILD_SCRIPT="$PWD/Android.mk" \
+            NDK_APPLICATION_MK="$PWD/Application.mk" \
+            NDK_LIBS_OUT="$PWD/libs" \
+            NDK_OUT="$PWD/obj" \
+            -j"$(nproc)"
+          test -f libs/arm64-v8a/libdrmid.so
+
+      - name: pack magisk zip
+        run: |
+          set -euo pipefail
+          SHA="$(git rev-parse --short HEAD)"
+          STAGE="$RUNNER_TEMP/mod"
+          mkdir -p "$STAGE/META-INF/com/google/android"
+          curl -fsSL -o "$STAGE/META-INF/com/google/android/update-binary" \
+            https://raw.githubusercontent.com/topjohnwu/Magisk/v29.0/scripts/module_installer.sh
+          printf '%s\n' '#MAGISK' > "$STAGE/META-INF/com/google/android/updater-script"
+          cp module/module.prop module/zn_modules.txt module/sepolicy.rule "$STAGE/"
+          cp libs/arm64-v8a/libdrmid.so "$STAGE/libdrmid.so"
+          mkdir -p release
+          ZIP="release/Android-FuckDrmID-${SHA}.zip"
+          (cd "$STAGE" && zip -r9 "$OLDPWD/$ZIP" .)
+          echo "packed $ZIP"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: libdrmid-arm64
+          path: libs/arm64-v8a/libdrmid.so
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Android-FuckDrmID-zip
+          path: release/*.zip
+          if-no-files-found: error

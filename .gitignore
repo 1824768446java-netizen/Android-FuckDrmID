@@ -1,0 +1,5 @@
+obj/
+libs/
+release/
+*.zip
+.DS_Store
