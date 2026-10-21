@@ -16,7 +16,6 @@ libcxx_export_cxxflags :=
 
 libcxx_cxxflags := \
     -std=c++2c \
-    -fvisibility-global-new-delete=force-hidden \
     -fvisibility=hidden -fvisibility-inlines-hidden \
     -DLIBCXX_BUILDING_LIBCXXABI \
     -D_LIBCPP_NO_EXCEPTIONS \

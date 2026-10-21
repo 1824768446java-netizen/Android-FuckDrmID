@@ -98,7 +98,8 @@ static void *make_trampoline(bool is_update, HookInstance *inst, void *real_hook
 	*reinterpret_cast<uint64_t*>(p + TRAMPOLINE_INSTANCE_OFF) = reinterpret_cast<uint64_t>(inst);
 	*reinterpret_cast<uint64_t*>(p + TRAMPOLINE_HOOK_OFF) = reinterpret_cast<uint64_t>(real_hook_fn);
 
-	__builtin___clear_cache(p, p + TRAMPOLINE_SIZE);
+	__builtin___clear_cache(reinterpret_cast<char *>(p),
+	                        reinterpret_cast<char *>(p + TRAMPOLINE_SIZE));
 	mprotect(mem, static_cast<size_t>(sysconf(_SC_PAGESIZE)), PROT_READ | PROT_EXEC);
 	return mem;
 }
@@ -301,7 +302,7 @@ void onModuleLoaded(void *self_handle, const struct ZygiskNextAPI *api) {
 			LOGD("cannot resolve base for %s, skipping", path.c_str());
 			continue;
 		}
-		LOGD("base 0x%llx â†’ %s", static_cast<unsigned long long>(base), path.c_str());
+		LOGD("base 0x%llx â†? %s", static_cast<unsigned long long>(base), path.c_str());
 
 		void *addr_Update = find_symbol_via_elfio(path, base, "SHA256_Update");
 		void *addr_Final = find_symbol_via_elfio(path, base, "SHA256_Final");
